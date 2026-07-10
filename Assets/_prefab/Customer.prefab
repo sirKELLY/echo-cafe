@@ -156,6 +156,7 @@ MonoBehaviour:
   patienceSeconds: 20
   tipThreshold: 0.5
   maxTip: 5
+  lingerSeconds: 1.2
 --- !u!95 &5511484191617220893
 Animator:
   serializedVersion: 7
@@ -192,7 +193,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CustomerFeedback
   popupPrefab: {fileID: -8130857915850243390, guid: 6abb22ed7baadcc4b8f9bde26811f555, type: 3}
   headOffset: {x: 0, y: 1.5, z: 0}
-  stackGap: 0.4
+  priceDelay: 0.97
+  tipDelay: 0.98
   priceColor: {r: 0.4, g: 1, b: 0.4, a: 1}
   tipColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   emoteColor: {r: 1, g: 1, b: 1, a: 1}

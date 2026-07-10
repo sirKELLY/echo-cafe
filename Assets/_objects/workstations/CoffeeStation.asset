@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad376a367e0747588150dda39f4864b1, type: 3}
   m_Name: CoffeeStation
   m_EditorClassIdentifier: Assembly-CSharp::_scripts.StationInfo
-  craftTime: 0
+  craftTime: 5
   output: {fileID: 11400000, guid: ec5783f313cf85046907e833a6c62577, type: 2}

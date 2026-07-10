@@ -5,16 +5,15 @@ using _scripts;
 // Lives on the Customer prefab next to Customer. Turns the customer's discrete events
 // (paid / wrong item / left) into floating popups above their head.
 //
-// Popups are spawned UNPARENTED on purpose: the customer Destroys itself the instant it
-// pays, so anything parented to it (or any coroutine on it) would die mid-animation.
-// Everything is spawned at once and separated by height, letting the float-up read as a stack.
+// Popups are spawned UNPARENTED on purpose so they outlive the customer. On pay they're
+// dealt out one at a time (price -> tip -> emote), all from the same head position; the
+// upward float of each earlier popup is what clears space for the next, so no offset is needed.
 [RequireComponent(typeof(Customer))]
 public class CustomerFeedback : MonoBehaviour
 {
     [Header("Popup")]
     [SerializeField] private FloatingText popupPrefab;
     [SerializeField] private Vector3 headOffset = new Vector3(0f, 1.5f, 0f);
-    [SerializeField] private float stackGap = 0.4f;   // vertical spacing so stacked popups don't overlap
 
     [Header("Deal timing")]   // keep priceDelay + tipDelay under Customer.lingerSeconds or the emote won't spawn
     [SerializeField] private float priceDelay = 0.35f;   // beat after the price before the tip
@@ -48,26 +47,25 @@ public class CustomerFeedback : MonoBehaviour
 
     private IEnumerator DealPopups(int basePrice, int tip)
     {
-        Spawn($"+${basePrice}", priceColor, 0);
+        Spawn($"+${basePrice}", priceColor);
         yield return new WaitForSeconds(priceDelay);
 
         if (tip > 0)
         {
-            Spawn($"+${tip} tip", tipColor, 1);
+            Spawn($"+${tip} tip", tipColor);
             yield return new WaitForSeconds(tipDelay);
         }
 
-        Spawn(tip > 0 ? ":D" : ":)", emoteColor, tip > 0 ? 2 : 1);
+        Spawn(tip > 0 ? ":D" : ":)", emoteColor);
     }
 
-    private void HandleWrongItem(ItemInfo item) => Spawn(":/", emoteColor, 0);   // comedy whiff
-    private void HandleLeft() => Spawn(">:(", emoteColor, 0);                     // patience ran out
+    private void HandleWrongItem(ItemInfo item) => Spawn(":/", emoteColor);   // comedy whiff
+    private void HandleLeft() => Spawn(">:(", emoteColor);                     // patience ran out
 
-    private void Spawn(string text, Color color, int row)
+    private void Spawn(string text, Color color)
     {
         if (popupPrefab == null) return;
-        Vector3 pos = transform.position + headOffset + Vector3.up * (stackGap * row);
-        FloatingText popup = Instantiate(popupPrefab, pos, Quaternion.identity);
+        FloatingText popup = Instantiate(popupPrefab, transform.position + headOffset, Quaternion.identity);
         popup.SetText(text, color);
     }
 }

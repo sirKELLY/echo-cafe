@@ -103,7 +103,7 @@ public class ExecuteBehaviour : MonoBehaviour
         if (_engaged != null)
         {
             CraftProgress01 = _engaged.Interact(this);
-            IsCrafting = true;
+            IsCrafting = _engaged is WorkStation;   // only a station craft shows the progress bar; serving a customer doesn't
         }
         else
         {
