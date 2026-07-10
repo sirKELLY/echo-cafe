@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace _scripts
 {
     [CreateAssetMenu(fileName = "ItemInfo", menuName = "Scriptable Objects/ItemInfo")]
+    [Serializable] 
     public class ItemInfo : ScriptableObject
     {
         public string displayName;

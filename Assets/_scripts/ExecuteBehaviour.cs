@@ -8,14 +8,25 @@ public class ExecuteBehaviour : MonoBehaviour
     private IIntentSource _intentSource;
     private IInteractable _engaged;
     private bool _handleHeld;
+    private bool _interactHeld;
 
     // read by a loading bar over the character's head
     public float CraftProgress01 { get; private set; }
     public bool IsCrafting { get; private set; }
     
     // the character's single hand slot; null = empty hands
-    public ItemInfo HeldItem { get; private set; }
+    [field: SerializeField] public ItemInfo HeldItem { get; private set; }
     public bool IsHoldingItem => HeldItem != null;
+
+    // what we're engaged with (highlight it) and where we're headed (animator / facing / footsteps)
+    public IInteractable EngagedTarget => _engaged;
+    public Vector2 MoveIntent { get; private set; }
+
+    // discrete hand moments — fire identically for the player and every echo
+    public event System.Action<ItemInfo> OnItemReceived;    // craft finished into hand
+    public event System.Action<ItemInfo> OnItemDelivered;   // a customer took it
+    public event System.Action<ItemInfo> OnItemDropped;     // discarded (incl. echo loop reset)
+    public event System.Action OnInteractWhiff;             // pressed interact at nothing (comedy hook)
 
     void Awake()
     {
@@ -38,6 +49,7 @@ public class ExecuteBehaviour : MonoBehaviour
 
     void ExecuteInput(SourceFrame SourceFrame)
     {
+        MoveIntent = SourceFrame.moveIntent;
         MoveCharacter(SourceFrame.moveIntent);
         Interact(SourceFrame.interactIntent);
         Handle(SourceFrame.handleIntent);
@@ -53,6 +65,10 @@ public class ExecuteBehaviour : MonoBehaviour
         // engage whatever is nearest; each target owns its own hand rule
         // (a station refuses full hands, a customer requires them)
         IInteractable target = intent ? FindNearest() : null;
+
+        // whiff: a fresh press with nothing in range (once per press, not per held frame)
+        if (intent && !_interactHeld && target == null) OnInteractWhiff?.Invoke();
+        _interactHeld = intent;
 
         if (!ReferenceEquals(target, _engaged))
         {
@@ -98,12 +114,15 @@ public class ExecuteBehaviour : MonoBehaviour
     public void ReceiveItem(ItemInfo item)
     {
         HeldItem = item;
+        OnItemReceived?.Invoke(item);
     }
 
     // called by a customer when a delivery is accepted; empties the hand slot
     public void ConsumeHeldItem()
     {
+        ItemInfo item = HeldItem;
         HeldItem = null;
+        OnItemDelivered?.Invoke(item);
     }
 
     void Handle(bool intent)
@@ -113,20 +132,61 @@ public class ExecuteBehaviour : MonoBehaviour
         _handleHeld = intent;
         if (!pressed) return;
 
-        if (IsHoldingItem) Drop();
+        if (IsHoldingItem) TryPlaceOnCounter();
         else TryPickup();
     }
 
-    void Drop()
+    // force-discard the held item (used by the echo loop reset); places nothing in the world
+    public void Drop()
     {
-        // TODO: place HeldItem on a counter in range, else spawn it on the floor.
-        // For now just empty the hand slot so crafting is possible again.
+        if (HeldItem == null) return;
+
+        ItemInfo item = HeldItem;
         HeldItem = null;
+        OnItemDropped?.Invoke(item);
     }
 
+    // Handle with empty hands: take whatever is on the nearest counter
     void TryPickup()
     {
-        // TODO: pick up an item from a counter / floor in range once world items exist.
+        Counter counter = FindNearestCounter();
+        if (counter == null || counter.IsEmpty) return;   // nothing to grab -> whiff
+        ReceiveItem(counter.Take());
+    }
+
+    // Handle with full hands: set the held item down on a free counter
+    void TryPlaceOnCounter()
+    {
+        Counter counter = FindNearestCounter();
+        if (counter == null) return;                      // no surface in reach -> keep holding
+
+        ItemInfo item = HeldItem;
+        if (counter.TryPlace(item))
+        {
+            HeldItem = null;
+            OnItemDropped?.Invoke(item);
+        }
+    }
+
+    Counter FindNearestCounter()
+    {
+        var hits = Physics2D.OverlapCircleAll(transform.position, characterProperties.interactRange, interactableMask);
+        Counter nearest = null;
+        float best = float.MaxValue;
+
+        foreach (var hit in hits)
+        {
+            if (!hit.TryGetComponent(out Counter counter)) continue;
+
+            float d = ((Vector2)transform.position - (Vector2)hit.transform.position).sqrMagnitude;
+            if (d < best)
+            {
+                best = d;
+                nearest = counter;
+            }
+        }
+
+        return nearest;
     }
     
 }

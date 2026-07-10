@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b9af7a002054f20ad994134025c41d5, type: 3}
+  m_Name: Coffee
+  m_EditorClassIdentifier: Assembly-CSharp::_scripts.ItemInfo
+  displayName: Coffee
+  sprite: {fileID: -688240512, guid: e5b7db4c4feebe448a63e027b4c52aa4, type: 3}
+  price: 5

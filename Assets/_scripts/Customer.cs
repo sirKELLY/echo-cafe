@@ -16,6 +16,15 @@ public class Customer : MonoBehaviour, IInteractable
     // 1 at arrival, 0 once patience is spent.
     public float Happiness => Mathf.Clamp01(1f - _waitTimer / patienceSeconds);
 
+    public float PatienceRemainingSeconds => Mathf.Max(0f, patienceSeconds - _waitTimer);
+    public IReadOnlyList<ItemInfo> RemainingItems => _order?.Remaining;   // the order bubble reads this
+
+    // discrete moments for popups / stingers; all fire before any Destroy
+    public event System.Action<ItemInfo> OnItemAccepted;   // right item handed over
+    public event System.Action<ItemInfo> OnWrongItem;      // whiff: not on the order (comedy hook)
+    public event System.Action<int, int> OnPaid;           // (basePrice, tip) — split so the tip can teach
+    public event System.Action OnLeftUnserved;             // patience out, sale lost
+
     public void SetOrder(IEnumerable<ItemInfo> items)
     {
         _order = new Order(items);
@@ -26,7 +35,11 @@ public class Customer : MonoBehaviour, IInteractable
         if (_done) return;
 
         _waitTimer += Time.deltaTime;
-        if (_waitTimer >= patienceSeconds) Leave(0);   // patience out -> lost sale
+        if (_waitTimer >= patienceSeconds)             // patience out -> lost sale
+        {
+            OnLeftUnserved?.Invoke();
+            Leave(0);
+        }
     }
 
     // IInteractable: same "walk up and hold interact" verb as a WorkStation.
@@ -36,7 +49,11 @@ public class Customer : MonoBehaviour, IInteractable
         if (_done || _order == null) return 0f;
         if (!user.IsHoldingItem) return 0f;           // nothing in hand -> nothing to give
 
-        if (!TryDeliver(user.HeldItem)) return 0f;    // wrong item -> whiff, keep holding it
+        if (!TryDeliver(user.HeldItem))               // wrong item -> whiff, keep holding it
+        {
+            OnWrongItem?.Invoke(user.HeldItem);
+            return 0f;
+        }
         user.ConsumeHeldItem();
         return 1f;
     }
@@ -47,10 +64,12 @@ public class Customer : MonoBehaviour, IInteractable
     private bool TryDeliver(ItemInfo item)
     {
         if (!_order.TryFulfill(item)) return false;
+        OnItemAccepted?.Invoke(item);
 
         if (_order.IsComplete)
         {
             int tip = Happiness >= tipThreshold ? Mathf.CeilToInt(maxTip * Happiness) : 0;
+            OnPaid?.Invoke(_order.TotalPrice(), tip);
             Leave(_order.TotalPrice() + tip);
         }
         return true;

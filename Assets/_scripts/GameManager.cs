@@ -11,6 +11,14 @@ public class GameManager : MonoBehaviour
     public int Money { get; private set; }
     public float TimeRemaining { get; private set; }
 
+    public bool IsOver => _over;
+    public int TargetMoney => targetMoney;
+    public float MoneyProgress01 => Mathf.Clamp01((float)Money / targetMoney);
+    public float TimeProgress01 => Mathf.Clamp01(TimeRemaining / timeLimitSeconds);
+
+    public event System.Action<int, int> OnMoneyChanged;   // (newTotal, delta) — "+$n" popups
+    public event System.Action<bool> OnGameEnded;          // true = won
+
     private bool _over;
 
     private void Awake()
@@ -33,12 +41,14 @@ public class GameManager : MonoBehaviour
         if (_over) return;
 
         Money += amount;
+        OnMoneyChanged?.Invoke(Money, amount);
         if (Money >= targetMoney) EndGame(true);
     }
 
     private void EndGame(bool won)
     {
         _over = true;
+        OnGameEnded?.Invoke(won);
         Debug.Log(won ? $"WIN — ${Money}" : $"LOSE — ${Money} / ${targetMoney}");
         // TODO: UI end screen + Firebase high score hook here
     }

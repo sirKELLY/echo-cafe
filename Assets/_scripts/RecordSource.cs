@@ -22,6 +22,13 @@ namespace _scripts
         private bool _isRecording;
         private float _recordTimer;
 
+        // recording is the game's most invisible state — surface it for the HUD
+        public bool IsRecording => _isRecording;
+        public float RecordProgress01 => _isRecording ? Mathf.Clamp01(_recordTimer / maxRecordSeconds) : 0f;
+
+        public event System.Action OnRecordingStarted;
+        public event System.Action OnRecordingStopped;   // key press or timer, either way
+
         private void Awake()
         {
             _playerSource = _player.GetComponent<IIntentSource>() as IIntentSource;
@@ -61,11 +68,13 @@ namespace _scripts
                 frames = new List<SourceFrame>(),
                 anchor = _playerSource.CurrentPosition()
             };
+            OnRecordingStarted?.Invoke();
         }
 
         public void StopRecording()
         {
             _isRecording = false;
+            OnRecordingStopped?.Invoke();
             if (_echoRecord.frames == null || _echoRecord.frames.Count == 0) return;
             echoManager.SpawnEcho(_echoRecord.frames, _echoRecord.anchor);
         }
