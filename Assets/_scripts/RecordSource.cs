@@ -13,7 +13,7 @@ namespace _scripts
     public class RecordSource: MonoBehaviour
     {
         [SerializeField] private EchoManager echoManager;
-        [SerializeField] private MonoBehaviour playerSourceObject; // must implement IIntentSource
+        [SerializeField] GameObject _player;
         [SerializeField] private float maxRecordSeconds = 5f;
         [SerializeField] private Key recordKey = Key.R;
 
@@ -24,9 +24,10 @@ namespace _scripts
 
         private void Awake()
         {
-            _playerSource = playerSourceObject as IIntentSource;
+            _playerSource = _player.GetComponent<IIntentSource>() as IIntentSource;
             Debug.Assert(_playerSource != null,
                 "playerSourceObject must implement IIntentSource.");
+            
         }
 
         private void Update()

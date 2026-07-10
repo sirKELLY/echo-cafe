@@ -25,6 +25,9 @@ public class GetPlayerInput : MonoBehaviour, IIntentSource
         var moveInput = _inputSystem.Player.Move.ReadValue<Vector2>();
         SourceFrame frame = new SourceFrame();
         frame.moveIntent = moveInput;
+        // IsPressed() = raw held state, so engagement is continuous regardless of the
+        // action's "Hold" interaction threshold (hold-vs-toggle is a separate layer).
+        frame.interactIntent = _inputSystem.Player.Interact.IsPressed();
 
         // this will pull the input from the player and return it as a SourceFrame
         return frame;
