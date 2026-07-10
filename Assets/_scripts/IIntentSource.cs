@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public struct SourceFrame
@@ -7,7 +8,8 @@ public struct SourceFrame
     public bool handleIntent; // pick up / drop object intent
 }
 
-interface IIntentSource
+public interface IIntentSource
 {
     SourceFrame Sample();   // called once per FixedUpdate
+    Vector2 CurrentPosition();
 }
