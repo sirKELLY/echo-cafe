@@ -752,6 +752,42 @@ PrefabInstance:
       propertyPath: characterProperties
       value: 
       objectReference: {fileID: 11400000, guid: 1c00cd8607c640346953f8b33b1dd509, type: 2}
+    - target: {fileID: 3816133036854041194, guid: a64862bd9a2180c49b0782990247599f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3816133036854041194, guid: a64862bd9a2180c49b0782990247599f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3816133036854041194, guid: a64862bd9a2180c49b0782990247599f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3816133036854041194, guid: a64862bd9a2180c49b0782990247599f, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6689795924499080544, guid: a64862bd9a2180c49b0782990247599f, type: 3}
+      propertyPath: m_Size.x
+      value: 0.34375
+      objectReference: {fileID: 0}
+    - target: {fileID: 6689795924499080544, guid: a64862bd9a2180c49b0782990247599f, type: 3}
+      propertyPath: m_Size.y
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6689795924499080544, guid: a64862bd9a2180c49b0782990247599f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6689795924499080544, guid: a64862bd9a2180c49b0782990247599f, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6689795924499080544, guid: a64862bd9a2180c49b0782990247599f, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

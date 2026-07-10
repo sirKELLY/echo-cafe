@@ -4,8 +4,7 @@ using UnityEngine;
 public struct SourceFrame
 {
     public Vector2 moveIntent; // movement intent, normalized vector
-    public bool interactIntent; // interact with object intent (cooking station, etc)
-    public bool handleIntent; // pick up / drop object intent
+    public bool interactIntent; // one button: counter place/pickup, else craft/serve
 }
 
 public interface IIntentSource

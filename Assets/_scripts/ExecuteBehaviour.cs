@@ -7,7 +7,6 @@ public class ExecuteBehaviour : MonoBehaviour
     [SerializeField] private LayerMask interactableMask;
     private IIntentSource _intentSource;
     private IInteractable _engaged;
-    private bool _handleHeld;
     private bool _interactHeld;
 
     // read by a loading bar over the character's head
@@ -15,7 +14,13 @@ public class ExecuteBehaviour : MonoBehaviour
     public bool IsCrafting { get; private set; }
     
     // the character's single hand slot; null = empty hands
-    [field: SerializeField] public ItemInfo HeldItem { get; private set; }
+    [SerializeField] private SpriteRenderer heldItemView;   // child renderer that shows the carried item
+    [SerializeField] private ItemInfo _heldItem;
+    public ItemInfo HeldItem
+    {
+        get => _heldItem;
+        private set { _heldItem = value; RefreshHandView(); }   // set once, the sprite always follows
+    }
     public bool IsHoldingItem => HeldItem != null;
 
     // what we're engaged with (highlight it) and where we're headed (animator / facing / footsteps)
@@ -33,6 +38,7 @@ public class ExecuteBehaviour : MonoBehaviour
         Debug.Log("ExecuteBehaviour Awake");
         _intentSource = GetComponent<IIntentSource>();
         Debug.Assert(_intentSource != null, "No IIntentSource found on this GameObject. Please add one.");
+        RefreshHandView();   // sync the sprite to whatever the slot deserialized with
     }
 
     public void FixedUpdate()
@@ -52,7 +58,6 @@ public class ExecuteBehaviour : MonoBehaviour
         MoveIntent = SourceFrame.moveIntent;
         MoveCharacter(SourceFrame.moveIntent);
         Interact(SourceFrame.interactIntent);
-        Handle(SourceFrame.handleIntent);
     }
 
     void MoveCharacter(Vector2 moveIntent)
@@ -60,19 +65,34 @@ public class ExecuteBehaviour : MonoBehaviour
         transform.position += new Vector3(moveIntent.x, moveIntent.y, 0) * (Time.fixedDeltaTime * characterProperties.moveSpeed);
     }
 
+    // One button. A fresh press first tries a counter hand-off (place if holding, pick up if
+    // empty hands); only if that does nothing does it fall through to continuous craft/serve.
     void Interact(bool intent)
     {
-        // engage whatever is nearest; each target owns its own hand rule
+        bool pressed = intent && !_interactHeld;
+
+        if (pressed)
+        {
+            bool handled = IsHoldingItem ? TryPlaceOnCounter() : TryPickup();
+            if (handled)
+            {
+                _interactHeld = true;
+                Disengage();          // a counter hand-off consumes the press; don't also craft
+                return;
+            }
+        }
+
+        // fall-through: engage whatever is nearest; each target owns its own hand rule
         // (a station refuses full hands, a customer requires them)
         IInteractable target = intent ? FindNearest() : null;
 
-        // whiff: a fresh press with nothing in range (once per press, not per held frame)
+        // whiff: a fresh press that did nothing at all — no counter, no interactable
         if (intent && !_interactHeld && target == null) OnInteractWhiff?.Invoke();
         _interactHeld = intent;
 
         if (!ReferenceEquals(target, _engaged))
         {
-            // left range, switched station, or released interact -> cancel the old one
+            // left range, switched target, or released -> cancel the old one
             _engaged?.StopInteract(this);
             _engaged = target;
         }
@@ -87,6 +107,14 @@ public class ExecuteBehaviour : MonoBehaviour
             CraftProgress01 = 0f;
             IsCrafting = false;
         }
+    }
+
+    void Disengage()
+    {
+        _engaged?.StopInteract(this);
+        _engaged = null;
+        CraftProgress01 = 0f;
+        IsCrafting = false;
     }
 
     IInteractable FindNearest()
@@ -125,15 +153,12 @@ public class ExecuteBehaviour : MonoBehaviour
         OnItemDelivered?.Invoke(item);
     }
 
-    void Handle(bool intent)
+    // mirror the hand slot onto the character's item sprite (empty hands hide it)
+    void RefreshHandView()
     {
-        // edge-triggered: pick up / drop is a discrete action, not a continuous hold
-        bool pressed = intent && !_handleHeld;
-        _handleHeld = intent;
-        if (!pressed) return;
-
-        if (IsHoldingItem) TryPlaceOnCounter();
-        else TryPickup();
+        if (heldItemView == null) return;
+        heldItemView.sprite = _heldItem != null ? _heldItem.sprite : null;
+        heldItemView.enabled = _heldItem != null;
     }
 
     // force-discard the held item (used by the echo loop reset); places nothing in the world
@@ -146,26 +171,27 @@ public class ExecuteBehaviour : MonoBehaviour
         OnItemDropped?.Invoke(item);
     }
 
-    // Handle with empty hands: take whatever is on the nearest counter
-    void TryPickup()
+    // Empty hands: take whatever is on the nearest counter. True if something was taken.
+    bool TryPickup()
     {
         Counter counter = FindNearestCounter();
-        if (counter == null || counter.IsEmpty) return;   // nothing to grab -> whiff
+        if (counter == null || counter.IsEmpty) return false;
         ReceiveItem(counter.Take());
+        return true;
     }
 
-    // Handle with full hands: set the held item down on a free counter
-    void TryPlaceOnCounter()
+    // Full hands: set the held item down on a free counter. True if it was placed.
+    bool TryPlaceOnCounter()
     {
         Counter counter = FindNearestCounter();
-        if (counter == null) return;                      // no surface in reach -> keep holding
+        if (counter == null) return false;                // no surface in reach -> keep holding
 
         ItemInfo item = HeldItem;
-        if (counter.TryPlace(item))
-        {
-            HeldItem = null;
-            OnItemDropped?.Invoke(item);
-        }
+        if (!counter.TryPlace(item)) return false;        // occupied -> keep holding
+
+        HeldItem = null;
+        OnItemDropped?.Invoke(item);
+        return true;
     }
 
     Counter FindNearestCounter()

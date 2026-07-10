@@ -9,7 +9,7 @@ namespace _scripts
         [SerializeField] private SpriteRenderer itemView;      // child renderer that shows the held item
         [SerializeField] private ItemInfo startingItem;        // optional: pre-stock this counter
 
-        private ItemInfo _item;
+        [SerializeField] private ItemInfo _item;
 
         public ItemInfo CurrentItem => _item;
         public bool IsEmpty => _item == null;

@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48bc0d1941229bd45829796665eb5da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_scripts.Counter
-  itemView: {fileID: 0}
+  itemView: {fileID: 1253270739688501997}
   startingItem: {fileID: 0}
 --- !u!61 &5712770214785577950
 BoxCollider2D:
@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 6888773862393380696}
   - component: {fileID: 1253270739688501997}
   m_Layer: 6
-  m_Name: GameObject
+  m_Name: itemHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
