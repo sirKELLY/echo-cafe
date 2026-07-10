@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: 68ecc757e746e854a9fafc5bc3fb51c8
+AssetOrigin:
+  serializedVersion: 1
+  productId: 353510
+  packageName: Timbeaux's Cozy Kitchen Asset Pack
+  packageVersion: 1.5.0
+  assetPath: Assets/CozyKitchen/Sprites/Food.png
+  uploadId: 905652
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -3536,10 +3543,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 353510
-  packageName: Timbeaux's Cozy Kitchen Asset Pack
-  packageVersion: 1.5.0
-  assetPath: Assets/CozyKitchen/Sprites/Food.png
-  uploadId: 905652
