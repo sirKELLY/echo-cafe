@@ -40,7 +40,7 @@ public class CustomerSpawner : MonoBehaviour
         Transform seat = FreeSeat();
         if (seat == null || menu.Count == 0) return;
 
-        Customer customer = Instantiate(customerPrefab, seat.position, Quaternion.identity);
+        Customer customer = Instantiate(customerPrefab, seat.position+ new Vector3(0, 1.5f,0), Quaternion.identity);
         customer.SetOrder(BuildOrder());
         _occupied[seat] = customer;
         OnCustomerArrived?.Invoke(customer);

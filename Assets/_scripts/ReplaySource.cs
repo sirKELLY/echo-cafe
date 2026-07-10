@@ -15,20 +15,25 @@ namespace _scripts
         public float LoopProgress01 => frames.Count == 0 ? 0f : (float)frameCount / frames.Count;
         public float LoopDurationSeconds => frames.Count * Time.fixedDeltaTime;
         public Vector2 Anchor => anchorA;
+        public int EchoNumber { get; private set; }   // 1-based, assigned once at spawn
 
         public event System.Action OnLoopRestarted;   // fires at the top of every loop (incl. the first)
+        public event System.Action<int> OnEchoNumberAssigned;   // fires once in SetupEcho; the head-text connector reads it
 
         private void Awake()
         {
             _execute = GetComponent<ExecuteBehaviour>();
         }
 
-        public void SetupEcho(List<SourceFrame> recordedFrames, Vector2 recordedAnchor)
+        public void SetupEcho(List<SourceFrame> recordedFrames, Vector2 recordedAnchor, int echoNumber)
         {
             frames = recordedFrames;
             anchorA = recordedAnchor;
             frameCount = 0;
             transform.position = (Vector3)anchorA;
+
+            EchoNumber = echoNumber;
+            OnEchoNumberAssigned?.Invoke(echoNumber);
         }
 
         // Called once per FixedUpdate by this echo's ExecuteBehaviour.
