@@ -1,19 +1,30 @@
+using System;
+using _scripts;
 using UnityEngine;
+using UnityEngine.Windows.WebCam;
 
 public class ExecuteBehaviour : MonoBehaviour
 {
     public CharacterProperties characterProperties;
     private IIntentSource _intentSource;
 
-    public void fixedUpdate()
+    void Awake()
+    {
+        Debug.Log("ExecuteBehaviour Awake");
+        _intentSource = GetComponent<IIntentSource>();
+        Debug.Assert(_intentSource != null, "No IIntentSource found on this GameObject. Please add one.");
+    }
+
+    public void FixedUpdate()
     {
         SourceFrame sourceFrame = GetSourceFrame();
-
+        ExecuteInput(sourceFrame);
     }
 
     SourceFrame GetSourceFrame()
     {
-        return _intentSource.Sample();  
+        SourceFrame sourceFrame = _intentSource.Sample(); 
+        return  sourceFrame;
     }
 
     void ExecuteInput(SourceFrame SourceFrame)
@@ -23,7 +34,7 @@ public class ExecuteBehaviour : MonoBehaviour
 
     void MoveCharacter(Vector2 moveIntent)
     {
-        transform.position += new Vector3(moveIntent.x, 0, moveIntent.y) * (Time.fixedDeltaTime * characterProperties.moveSpeed);
+        transform.position += new Vector3(moveIntent.x, moveIntent.y, 0) * (Time.fixedDeltaTime * characterProperties.moveSpeed);
     }
 
     void Interact()
@@ -35,5 +46,5 @@ public class ExecuteBehaviour : MonoBehaviour
     {
         // check for objects in range and pick them up or drop them
     }
-
+    
 }
