@@ -9,7 +9,7 @@ namespace _scripts
     {
         public string displayName;
         public Sprite sprite;
-        public int price = 5;   // used by the customer / economy layer
-        // other?
+        public int price = 5;        // used by the customer / economy layer
+        public Sprite spillSprite;   // stamped onto the spill prefab when this item is spilled on the floor
     }
 }

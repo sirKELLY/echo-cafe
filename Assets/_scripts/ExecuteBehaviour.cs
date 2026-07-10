@@ -15,6 +15,7 @@ public class ExecuteBehaviour : MonoBehaviour
     
     // the character's single hand slot; null = empty hands
     [SerializeField] private SpriteRenderer heldItemView;   // child renderer that shows the carried item
+    [SerializeField] private GameObject spillPrefab;        // generic floor splat; the spilled item's sprite is stamped on it
     [SerializeField] private ItemInfo _heldItem;
     public ItemInfo HeldItem
     {
@@ -30,8 +31,9 @@ public class ExecuteBehaviour : MonoBehaviour
     // discrete hand moments — fire identically for the player and every echo
     public event System.Action<ItemInfo> OnItemReceived;    // craft finished into hand
     public event System.Action<ItemInfo> OnItemDelivered;   // a customer took it
-    public event System.Action<ItemInfo> OnItemDropped;     // discarded (incl. echo loop reset)
-    public event System.Action OnInteractWhiff;             // pressed interact at nothing (comedy hook)
+    public event System.Action<ItemInfo> OnItemDropped;     // set down onto a counter
+    public event System.Action<ItemInfo> OnItemSpilled;     // splatted on the floor from a dead-end press (comedy hook)
+    public event System.Action OnInteractWhiff;             // pressed interact at nothing, empty-handed
 
     void Awake()
     {
@@ -65,30 +67,31 @@ public class ExecuteBehaviour : MonoBehaviour
         transform.position += new Vector3(moveIntent.x, moveIntent.y, 0) * (Time.fixedDeltaTime * characterProperties.moveSpeed);
     }
 
-    // One button. A fresh press first tries a counter hand-off (place if holding, pick up if
-    // empty hands); only if that does nothing does it fall through to continuous craft/serve.
+    // One button. Holding resolves a press in one shot — place on a counter, serve a customer,
+    // else spill on the floor. Empty hands pick up from a counter, else engage a station to craft.
     void Interact(bool intent)
     {
         bool pressed = intent && !_interactHeld;
+        _interactHeld = intent;
 
-        if (pressed)
+        if (IsHoldingItem)
         {
-            bool handled = IsHoldingItem ? TryPlaceOnCounter() : TryPickup();
-            if (handled)
-            {
-                _interactHeld = true;
-                Disengage();          // a counter hand-off consumes the press; don't also craft
-                return;
-            }
+            // a full-handed press has to go somewhere; no counter and no customer means it spills
+            if (pressed && !TryPlaceOnCounter() && !TryServe()) Spill();
+            Disengage();
+            return;
         }
 
-        // fall-through: engage whatever is nearest; each target owns its own hand rule
-        // (a station refuses full hands, a customer requires them)
+        if (pressed && TryPickup())   // took something off a counter
+        {
+            Disengage();
+            return;
+        }
+
+        // empty hands: engage the nearest station and craft while the button is held
         IInteractable target = intent ? FindNearest() : null;
 
-        // whiff: a fresh press that did nothing at all — no counter, no interactable
-        if (intent && !_interactHeld && target == null) OnInteractWhiff?.Invoke();
-        _interactHeld = intent;
+        if (pressed && target == null) OnInteractWhiff?.Invoke();
 
         if (!ReferenceEquals(target, _engaged))
         {
@@ -138,6 +141,28 @@ public class ExecuteBehaviour : MonoBehaviour
         return nearest;
     }
 
+    // Nearest thing the interact button would act on — station, customer, OR counter.
+    // Read-only: used by the on-screen selection ring. Only the player is ever polled,
+    // so echoes pay nothing for this. (Does not reuse FindNearest, which filters to
+    // IInteractable and would drop counters.)
+    public Transform PeekNearestView()
+    {
+        var hits = Physics2D.OverlapCircleAll(transform.position, characterProperties.interactRange, interactableMask);
+        Transform view = null;
+        float best = float.MaxValue;
+
+        foreach (var hit in hits)
+        {
+            bool actionable = hit.TryGetComponent(out IInteractable _) || hit.TryGetComponent(out Counter _);
+            if (!actionable) continue;
+
+            float d = ((Vector2)transform.position - (Vector2)hit.transform.position).sqrMagnitude;
+            if (d < best) { best = d; view = hit.transform; }
+        }
+
+        return view;
+    }
+
     // called by the station when a craft completes; the crafter always has empty hands here
     public void ReceiveItem(ItemInfo item)
     {
@@ -161,16 +186,6 @@ public class ExecuteBehaviour : MonoBehaviour
         heldItemView.enabled = _heldItem != null;
     }
 
-    // force-discard the held item (used by the echo loop reset); places nothing in the world
-    public void Drop()
-    {
-        if (HeldItem == null) return;
-
-        ItemInfo item = HeldItem;
-        HeldItem = null;
-        OnItemDropped?.Invoke(item);
-    }
-
     // Empty hands: take whatever is on the nearest counter. True if something was taken.
     bool TryPickup()
     {
@@ -192,6 +207,32 @@ public class ExecuteBehaviour : MonoBehaviour
         HeldItem = null;
         OnItemDropped?.Invoke(item);
         return true;
+    }
+
+    // Full hands: hand the item to the nearest customer. True if they took it.
+    bool TryServe()
+    {
+        IInteractable target = FindNearest();
+        if (target == null) return false;
+        target.Interact(this);      // a customer consumes it; a station refuses (full hands)
+        return !IsHoldingItem;      // served iff the item left our hand
+    }
+
+    // Item leaves the hand as an uninteractable floor stain and is gone. Used by a dead-end
+    // interact press and by the echo loop reset. Safe on empty hands (no-op).
+    public void Spill()
+    {
+        ItemInfo item = HeldItem;
+        if (item == null) return;
+
+        if (spillPrefab != null)
+        {
+            GameObject splat = Instantiate(spillPrefab, transform.position, Quaternion.identity);
+            var view = splat.GetComponentInChildren<SpriteRenderer>();
+            if (view != null && item.spillSprite != null) view.sprite = item.spillSprite;
+        }
+        HeldItem = null;            // destroyed: out of play (the ItemInfo asset itself is untouched)
+        OnItemSpilled?.Invoke(item);
     }
 
     Counter FindNearestCounter()

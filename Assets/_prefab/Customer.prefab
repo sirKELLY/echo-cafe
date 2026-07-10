@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5100373511281299658}
   - component: {fileID: 8990166271617290345}
   - component: {fileID: 5511484191617220893}
+  - component: {fileID: -540825518028781892}
   m_Layer: 6
   m_Name: Customer
   m_TagString: Untagged
@@ -177,3 +178,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-540825518028781892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436145536197726814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b75ebe52a45db9e44b5267d16940c656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CustomerFeedback
+  popupPrefab: {fileID: -8130857915850243390, guid: 6abb22ed7baadcc4b8f9bde26811f555, type: 3}
+  headOffset: {x: 0, y: 1.5, z: 0}
+  stackGap: 0.4
+  priceColor: {r: 0.4, g: 1, b: 0.4, a: 1}
+  tipColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  emoteColor: {r: 1, g: 1, b: 1, a: 1}

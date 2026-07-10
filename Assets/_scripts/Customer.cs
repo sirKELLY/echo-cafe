@@ -8,6 +8,7 @@ public class Customer : MonoBehaviour, IInteractable
     [SerializeField] private float patienceSeconds = 20f;                 // time until happiness hits 0
     [SerializeField, Range(0f, 1f)] private float tipThreshold = 0.5f;    // happiness above this -> tip
     [SerializeField] private int maxTip = 5;
+    [SerializeField] private float lingerSeconds = 1.2f;                  // stay seated + idling this long after paying, then vanish
 
     private Order _order;
     private float _waitTimer;
@@ -80,6 +81,6 @@ public class Customer : MonoBehaviour, IInteractable
         _done = true;
         if (payment > 0 && GameManager.Instance != null)
             GameManager.Instance.AddMoney(payment);
-        Destroy(gameObject);
+        Destroy(gameObject, lingerSeconds);   // linger + idle a beat so the popups can deal out before we vanish
     }
 }

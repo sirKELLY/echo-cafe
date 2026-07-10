@@ -51,7 +51,7 @@ namespace _scripts
         private void BeginLoop()
         {
             transform.position = (Vector3)anchorA;
-            if (_execute != null && _execute.IsHoldingItem) _execute.Drop();
+            if (_execute != null && _execute.IsHoldingItem) _execute.Spill();
             OnLoopRestarted?.Invoke();
         }
 

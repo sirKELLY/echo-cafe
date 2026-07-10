@@ -115,6 +115,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   heldItemView: {fileID: 4459055511402911819}
+  spillPrefab: {fileID: 1608453286549879210, guid: f2a752e5617f7c740a0b0f6d24a358b8, type: 3}
   _heldItem: {fileID: 0}
 --- !u!114 &4956350034237365450
 MonoBehaviour:
