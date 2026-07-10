@@ -106,6 +106,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExecuteBehaviour
   characterProperties: {fileID: 11400000, guid: 1c00cd8607c640346953f8b33b1dd509, type: 2}
+  interactableMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &4956350034237365450
 MonoBehaviour:
   m_ObjectHideFlags: 0

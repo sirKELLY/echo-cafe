@@ -13,6 +13,20 @@ public class CustomerSpawner : MonoBehaviour
     private readonly Dictionary<Transform, Customer> _occupied = new();
     private float _timer;
 
+    public int SeatsTotal => seats.Count;
+    public int SeatsOccupied
+    {
+        get
+        {
+            int n = 0;
+            foreach (Transform seat in seats)
+                if (_occupied.TryGetValue(seat, out Customer c) && c != null) n++;
+            return n;
+        }
+    }
+
+    public event System.Action<Customer> OnCustomerArrived;   // door chime hook
+
     private void Update()
     {
         _timer += Time.deltaTime;
@@ -29,6 +43,7 @@ public class CustomerSpawner : MonoBehaviour
         Customer customer = Instantiate(customerPrefab, seat.position, Quaternion.identity);
         customer.SetOrder(BuildOrder());
         _occupied[seat] = customer;
+        OnCustomerArrived?.Invoke(customer);
     }
 
     // A seat is free if never used or its last customer has left (Destroy -> Unity-null).

@@ -15,6 +15,10 @@ public class Order
 
     public bool IsComplete => _remaining.Count == 0;
 
+    // read-only views for UI: what they still want / what they originally asked for
+    public IReadOnlyList<ItemInfo> Remaining => _remaining;
+    public IReadOnlyList<ItemInfo> Requested => _requested;
+
     // Removes one unit matching 'item'. False if that item isn't (still) on the order.
     public bool TryFulfill(ItemInfo item)
     {

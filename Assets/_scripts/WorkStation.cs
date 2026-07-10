@@ -18,6 +18,12 @@ namespace _scripts
     {
         [SerializeField] private StationInfo info;
 
+        // signage + HUD surface
+        public StationInfo Info => info;
+        public int UsersEngaged => _progress.Count;
+
+        public event System.Action<ExecuteBehaviour, ItemInfo> OnCraftCompleted;
+
         // independent per-user progress: the player and each echo craft simultaneously
         private readonly Dictionary<ExecuteBehaviour, float> _progress = new();
 
@@ -51,6 +57,7 @@ namespace _scripts
         {
             // the crafter stayed the whole time and has empty hands, so they receive it directly
             user.ReceiveItem(info.output);
+            OnCraftCompleted?.Invoke(user, info.output);
             Debug.Log($"{user.name} finished crafting {info.output.displayName} at {name}");
         }
     }
