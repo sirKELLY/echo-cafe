@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -1226330733091066934}
   - component: {fileID: -2804227417120094327}
   - component: {fileID: 9147932513669948762}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: OringinalPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -235,7 +235,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3816133036854041194}
   - component: {fileID: 6689795924499080544}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: itemInHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -327,7 +327,7 @@ GameObject:
   - component: {fileID: 519130801319751928}
   - component: {fileID: 8510658528788464607}
   - component: {fileID: 617421037502452659}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Number
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -509,10 +509,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Progress Bar
       objectReference: {fileID: 0}
+    - target: {fileID: 476693496097788241, guid: 85d114e52dff33b409b5c99887b0e885, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 917632882426012065, guid: 85d114e52dff33b409b5c99887b0e885, type: 3}
       propertyPath: source
       value: 
       objectReference: {fileID: 3681275822063319698}
+    - target: {fileID: 1119206139100464278, guid: 85d114e52dff33b409b5c99887b0e885, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3256284080571601130, guid: 85d114e52dff33b409b5c99887b0e885, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.95
@@ -568,6 +576,14 @@ PrefabInstance:
     - target: {fileID: 3256284080571601130, guid: 85d114e52dff33b409b5c99887b0e885, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4463721394042287096, guid: 85d114e52dff33b409b5c99887b0e885, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8733518311931095717, guid: 85d114e52dff33b409b5c99887b0e885, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

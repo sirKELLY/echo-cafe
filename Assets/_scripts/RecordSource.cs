@@ -15,7 +15,7 @@ namespace _scripts
         [SerializeField] private EchoManager echoManager;
         [SerializeField] GameObject _player;
         [SerializeField] private float maxRecordSeconds = 5f;
-        [SerializeField] private Key recordKey = Key.R;
+        [SerializeField] private Key recordKey = Key.Space;
 
         private IIntentSource _playerSource;
         private EchoRecord _echoRecord;

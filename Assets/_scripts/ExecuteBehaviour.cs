@@ -16,6 +16,7 @@ public class ExecuteBehaviour : MonoBehaviour
     // the character's single hand slot; null = empty hands
     [SerializeField] private SpriteRenderer heldItemView;   // child renderer that shows the carried item
     [SerializeField] private GameObject spillPrefab;        // generic floor splat; the spilled item's sprite is stamped on it
+    [SerializeField] private float spillScatter = 0.3f;     // splats land within this radius of the spill point, so repeats don't stack exactly
     [SerializeField] private ItemInfo _heldItem;
     public ItemInfo HeldItem
     {
@@ -195,14 +196,14 @@ public class ExecuteBehaviour : MonoBehaviour
         return true;
     }
 
-    // Full hands: set the held item down on a free counter. True if it was placed.
+    // Full hands: set the held item down on the nearest free counter. True if it was placed.
     bool TryPlaceOnCounter()
     {
-        Counter counter = FindNearestCounter();
-        if (counter == null) return false;                // no surface in reach -> keep holding
+        Counter counter = FindNearestFreeCounter();
+        if (counter == null) return false;                // no free surface in reach -> keep holding
 
         ItemInfo item = HeldItem;
-        if (!counter.TryPlace(item)) return false;        // occupied -> keep holding
+        if (!counter.TryPlace(item)) return false;        // race guard; it was empty when we found it
 
         HeldItem = null;
         OnItemDropped?.Invoke(item);
@@ -227,7 +228,8 @@ public class ExecuteBehaviour : MonoBehaviour
 
         if (spillPrefab != null)
         {
-            GameObject splat = Instantiate(spillPrefab, transform.position, Quaternion.identity);
+            Vector3 where = transform.position + (Vector3)(Random.insideUnitCircle * spillScatter);
+            GameObject splat = Instantiate(spillPrefab, where, Quaternion.identity);
             var view = splat.GetComponentInChildren<SpriteRenderer>();
             if (view != null && item.spillSprite != null) view.sprite = item.spillSprite;
         }
@@ -255,5 +257,29 @@ public class ExecuteBehaviour : MonoBehaviour
 
         return nearest;
     }
-    
+
+    // Full hands: nearest EMPTY counter within the wider placeRange, so a held item can reach
+    // past an occupied surface to an open one instead of failing on the closest counter.
+    Counter FindNearestFreeCounter()
+    {
+        var hits = Physics2D.OverlapCircleAll(transform.position, characterProperties.placeRange, interactableMask);
+        Counter nearest = null;
+        float best = float.MaxValue;
+
+        foreach (var hit in hits)
+        {
+            if (!hit.TryGetComponent(out Counter counter)) continue;
+            if (!counter.IsEmpty) continue;   // only surfaces we can actually place on
+
+            float d = ((Vector2)transform.position - (Vector2)hit.transform.position).sqrMagnitude;
+            if (d < best)
+            {
+                best = d;
+                nearest = counter;
+            }
+        }
+
+        return nearest;
+    }
+
 }

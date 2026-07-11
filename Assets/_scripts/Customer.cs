@@ -25,10 +25,12 @@ public class Customer : MonoBehaviour, IInteractable
     public event System.Action<ItemInfo> OnWrongItem;      // whiff: not on the order (comedy hook)
     public event System.Action<int, int> OnPaid;           // (basePrice, tip) — split so the tip can teach
     public event System.Action OnLeftUnserved;             // patience out, sale lost
+    public event System.Action OnOrderChanged;             // order set — the head bubble builds itself on this
 
     public void SetOrder(IEnumerable<ItemInfo> items)
     {
         _order = new Order(items);
+        OnOrderChanged?.Invoke();
     }
 
     private void Update()
