@@ -40985,10 +40985,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 395036050721528570, guid: 6f418f4df32a72a468a571c86ffe0df8, type: 3}
+      propertyPath: ringColor.b
+      value: 0.34584472
+      objectReference: {fileID: 0}
+    - target: {fileID: 395036050721528570, guid: 6f418f4df32a72a468a571c86ffe0df8, type: 3}
+      propertyPath: ringColor.g
+      value: 0.22710575
+      objectReference: {fileID: 0}
+    - target: {fileID: 395036050721528570, guid: 6f418f4df32a72a468a571c86ffe0df8, type: 3}
+      propertyPath: ringColor.r
+      value: 0.6301887
+      objectReference: {fileID: 0}
     - target: {fileID: 3394553301858242584, guid: 6f418f4df32a72a468a571c86ffe0df8, type: 3}
       propertyPath: pulse
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3394553301858242584, guid: 6f418f4df32a72a468a571c86ffe0df8, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1921590368}
     - target: {fileID: 3394553301858242584, guid: 6f418f4df32a72a468a571c86ffe0df8, type: 3}
       propertyPath: yOffset
       value: 0
@@ -41728,7 +41744,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.91006315}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -41738,7 +41754,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 6.41, y: 5.4100003}
+  m_Size: {x: 6.41, y: 3.5898736}
   m_EdgeRadius: 0
 --- !u!114 &1782167385
 MonoBehaviour:
@@ -42091,6 +42107,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1116418108731382457, guid: a64862bd9a2180c49b0782990247599f, type: 3}
   m_PrefabInstance: {fileID: 454535375}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1921590368 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3681275822063319698, guid: a64862bd9a2180c49b0782990247599f, type: 3}
+  m_PrefabInstance: {fileID: 454535375}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921590358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb24e1e9a1ddf0545a52a6ef6241d215, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ExecuteBehaviour
 --- !u!1 &1934584673
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,10 +16,14 @@ public class InteractionSelector : MonoBehaviour
             var input = FindFirstObjectByType<GetPlayerInput>();   // player-only: echoes have ReplaySource
             if (input != null) player = input.GetComponent<ExecuteBehaviour>();
         }
+
+        
     }
 
     void LateUpdate()
     {
+        gameObject.SetActive(player != null);
+
         Transform target = player != null ? player.PeekNearestView() : null;
         ring.enabled = target != null;
         if (target == null) return;
