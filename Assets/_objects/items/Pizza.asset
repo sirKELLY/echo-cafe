@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Pizza
   m_EditorClassIdentifier: Assembly-CSharp::_scripts.ItemInfo
   displayName: Pizza
-  sprite: {fileID: -688240512, guid: e5b7db4c4feebe448a63e027b4c52aa4, type: 3}
+  sprite: {fileID: -6444940296795206775, guid: b9ab8fc4151ed334eb66a8df8e6cdc3d, type: 3}
   price: 5
   spillSprite: {fileID: -1820749944, guid: e5b7db4c4feebe448a63e027b4c52aa4, type: 3}
