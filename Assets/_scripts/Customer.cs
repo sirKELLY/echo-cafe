@@ -52,6 +52,12 @@ public class Customer : MonoBehaviour, IInteractable
         if (_done || _order == null) return 0f;
         if (!user.IsHoldingItem) return 0f;           // nothing in hand -> nothing to give
 
+        if (!user.HeldItemIsFresh)                    // stale food -> customer refuses it, keep holding it
+        {
+            OnWrongItem?.Invoke(user.HeldItem);
+            return 0f;
+        }
+
         if (!TryDeliver(user.HeldItem))               // wrong item -> whiff, keep holding it
         {
             OnWrongItem?.Invoke(user.HeldItem);

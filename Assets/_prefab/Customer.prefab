@@ -154,9 +154,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2354904d5d8ad1249b8b284916261337, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Customer
-  patienceSeconds: 20
+  patienceSeconds: 40
   tipThreshold: 0.5
-  maxTip: 5
+  maxTip: 10
   lingerSeconds: 1.2
 --- !u!95 &5511484191617220893
 Animator:
@@ -198,7 +198,14 @@ MonoBehaviour:
   tipDelay: 0.98
   priceColor: {r: 0.4, g: 1, b: 0.4, a: 1}
   tipColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  emoteColor: {r: 1, g: 1, b: 1, a: 1}
+  happyColor: {r: 0.4, g: 1, b: 0.5, a: 1}
+  contentColor: {r: 1, g: 1, b: 1, a: 1}
+  wrongColor: {r: 1, g: 0.6, b: 0.1, a: 1}
+  angryColor: {r: 1, g: 0.3, b: 0.3, a: 1}
+  popupSfx: {fileID: 8300000, guid: 6905658ffc64be14e9d9b8dfa041eac3, type: 3}
+  thanksSfx: {fileID: 8300000, guid: f5f7c659ef4797e4eb1dc52b341f585d, type: 3}
+  byeSfx: {fileID: 8300000, guid: a7359d1878e21c144ba0ab9ca90cde64, type: 3}
+  sfxVolume: 1
 --- !u!114 &6184639574354662297
 MonoBehaviour:
   m_ObjectHideFlags: 0

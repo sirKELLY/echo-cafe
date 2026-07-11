@@ -6,7 +6,16 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Home.unity
+    guid: 82557bb4e81c96e479759d44dd75919b
+  - enabled: 1
     path: Assets/Scenes/Echo Cafe.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Home 2.unity
+    guid: 59075a8f56ae72f4da2b5257ed295dba
+  - enabled: 1
+    path: Assets/Scenes/Home 1.unity
+    guid: 1b3c4d32a3462e649833cd2357bca307
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

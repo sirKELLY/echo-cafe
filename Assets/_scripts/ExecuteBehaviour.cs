@@ -9,6 +9,10 @@ public class ExecuteBehaviour : MonoBehaviour
     private IInteractable _engaged;
     private bool _interactHeld;
 
+    private Animator _animator;
+    private SpriteRenderer _bodyView;   // root renderer; sprite faces right, flipX when heading left
+    private static readonly int IsWalking = Animator.StringToHash("isWalking");
+
     // read by a loading bar over the character's head
     public float CraftProgress01 { get; private set; }
     public bool IsCrafting { get; private set; }
@@ -24,6 +28,9 @@ public class ExecuteBehaviour : MonoBehaviour
         private set { _heldItem = value; RefreshHandView(); }   // set once, the sprite always follows
     }
     public bool IsHoldingItem => HeldItem != null;
+
+    private float _heldBornTime;   // Time.time the held food was made; ages toward stale
+    public bool HeldItemIsFresh => _heldItem == null || Time.time - _heldBornTime < _heldItem.freshSeconds;
 
     // what we're engaged with (highlight it) and where we're headed (animator / facing / footsteps)
     public IInteractable EngagedTarget => _engaged;
@@ -41,6 +48,8 @@ public class ExecuteBehaviour : MonoBehaviour
         Debug.Log("ExecuteBehaviour Awake");
         _intentSource = GetComponent<IIntentSource>();
         Debug.Assert(_intentSource != null, "No IIntentSource found on this GameObject. Please add one.");
+        _animator = GetComponent<Animator>();
+        _bodyView = GetComponent<SpriteRenderer>();
         RefreshHandView();   // sync the sprite to whatever the slot deserialized with
     }
 
@@ -66,6 +75,10 @@ public class ExecuteBehaviour : MonoBehaviour
     void MoveCharacter(Vector2 moveIntent)
     {
         transform.position += new Vector3(moveIntent.x, moveIntent.y, 0) * (Time.fixedDeltaTime * characterProperties.moveSpeed);
+
+        _animator.SetBool(IsWalking, moveIntent.sqrMagnitude > 0.0001f);
+        Debug.Log("isWalking: " +(moveIntent.sqrMagnitude > 0.0001f));
+        if (moveIntent.x != 0f) _bodyView.flipX = moveIntent.x < 0f;   // keep last facing when moving straight up/down
     }
 
     // One button. Holding resolves a press in one shot — place on a counter, serve a customer,
@@ -165,8 +178,9 @@ public class ExecuteBehaviour : MonoBehaviour
     }
 
     // called by the station when a craft completes; the crafter always has empty hands here
-    public void ReceiveItem(ItemInfo item)
+    public void ReceiveItem(ItemInfo item, float bornTime = float.NaN)
     {
+        _heldBornTime = float.IsNaN(bornTime) ? Time.time : bornTime;   // fresh craft when no age passed
         HeldItem = item;
         OnItemReceived?.Invoke(item);
     }
@@ -192,7 +206,8 @@ public class ExecuteBehaviour : MonoBehaviour
     {
         Counter counter = FindNearestCounter();
         if (counter == null || counter.IsEmpty) return false;
-        ReceiveItem(counter.Take());
+        float bornTime = counter.BornTime;   // read before Take clears the counter
+        ReceiveItem(counter.Take(), bornTime);
         return true;
     }
 
@@ -203,7 +218,7 @@ public class ExecuteBehaviour : MonoBehaviour
         if (counter == null) return false;                // no free surface in reach -> keep holding
 
         ItemInfo item = HeldItem;
-        if (!counter.TryPlace(item)) return false;        // race guard; it was empty when we found it
+        if (!counter.TryPlace(item, _heldBornTime)) return false;        // race guard; it was empty when we found it
 
         HeldItem = null;
         OnItemDropped?.Invoke(item);
