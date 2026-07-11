@@ -118,6 +118,7 @@ MonoBehaviour:
     m_Bits: 64
   heldItemView: {fileID: 4459055511402911819}
   spillPrefab: {fileID: 1608453286549879210, guid: f2a752e5617f7c740a0b0f6d24a358b8, type: 3}
+  spillScatter: 0.3
   _heldItem: {fileID: 0}
 --- !u!114 &4956350034237365450
 MonoBehaviour:
@@ -268,8 +269,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.3, y: -2.58, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3.7, y: 3.7, z: 3.7}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8409138356944082087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

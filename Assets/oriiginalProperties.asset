@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: oriiginalProperties
   m_EditorClassIdentifier: Assembly-CSharp::CharacterProperties
   moveSpeed: 4
-  interactRange: 2
+  interactRange: 1
+  placeRange: 3.5
