@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -147, y: 454}
+  m_AnchoredPosition: {x: -147, y: 285}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3393119555406440609
@@ -152,9 +152,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TextPulseGlow
   minScale: 1
   maxScale: 1.2
-  baseColor: {r: 0.9091328, g: 0.8233412, b: 0.9529412, a: 0.53333336}
+  baseColor: {r: 0.93864703, g: 0.9100588, b: 0.9529412, a: 0.53333336}
   minAlpha: 0.7
-  maxAlpha: 1.5
+  maxAlpha: 1
   speed: 1.5
 --- !u!1 &2002218801446792922
 GameObject:
@@ -304,7 +304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.32886434, g: 0.70060194, b: 0.7056604, a: 0.08627451}
+  m_Color: {r: 0.32886434, g: 0.70060194, b: 0.7056604, a: 0.2509804}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -332,7 +332,6 @@ GameObject:
   - component: {fileID: 3166864382705058454}
   - component: {fileID: 8146588975275116935}
   - component: {fileID: 1017435686952904570}
-  - component: {fileID: 6652556910708368511}
   m_Layer: 5
   m_Name: Echoing  (1)
   m_TagString: Untagged
@@ -459,21 +458,3 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &6652556910708368511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8620477328668575474}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 931ba66b9b7bdc244b4df12face102c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TextPulseGlow
-  minScale: 1
-  maxScale: 1.2
-  baseColor: {r: 0.9091328, g: 0.8233412, b: 0.9529412, a: 0.53333336}
-  minAlpha: 0.7
-  maxAlpha: 1.5
-  speed: 1.5
